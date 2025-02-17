@@ -1,6 +1,17 @@
 import React, { useState } from "react";
-import { Button, TextField, Grid, Typography, Box, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Grid,
+  Typography,
+  Box,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../api"; // Import the registerUser function
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -8,18 +19,42 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Placeholder validation logic
     if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
     }
+    if (!selectedOption) {
+      alert("Please select an option");
+      return;
+    }
+    const userData = {
+      name,
+      email,
+      password,
+      selectedOption,
+    };
 
-    // Simulated registration logic
+    setLoading(true);
+    setError("");
+
+    try {
+      const result = await registerUser(userData);
+      console.log("Registration success:", result);
+      alert("Registration successful!");
+      navigate("/");
+    } catch (err) {
+      setError(err || "Something went wrong.");
+      console.error("Registration error:", err);
+    } finally {
+      setLoading(false);
+    }
     console.log("User registered:", { name, email, password, selectedOption });
     alert("Registration successful!");
     navigate("/");
@@ -113,9 +148,10 @@ const RegisterPage = () => {
             color="primary"
             fullWidth
             onClick={handleRegister}
+            disabled={loading}
             sx={{ padding: "10px 0", fontSize: "16px" }}
           >
-            Sign Up
+            {loading ? "Registering..." : "Sign Up"}
           </Button>
         </Grid>
         <Grid item xs={12} textAlign="center">

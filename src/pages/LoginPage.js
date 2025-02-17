@@ -1,20 +1,38 @@
 import React, { useState } from "react";
 import { Button, TextField, Grid, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../api"; // Import the loginUser function
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Placeholder login logic
+
+    setLoading(true);
+    setError("");
     console.log(email, password);
-    if (email === "test@test.com" && password === "password") {
-      navigate("/main");
-    } else {
-      alert("Invalid credentials");
+    // if (email === "test@test.com" && password === "password") {
+    //   navigate("/main");
+    // } else {
+    //   alert("Invalid credentials");
+    // }
+
+    try {
+      const credentials = { email, password };
+      const result = await loginUser(credentials);
+      console.log("Login success:", result);
+      alert("Login successful!");
+      navigate("/main"); // Redirect to main page after login
+    } catch (err) {
+      setError(err || "Invalid credentials.");
+      console.error("Login error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,8 +86,9 @@ const LoginPage = () => {
             color="primary"
             fullWidth
             onClick={handleLogin}
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </Button>
         </Grid>
         <Grid item xs={12}>
