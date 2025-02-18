@@ -42,7 +42,7 @@ const MainPage = () => {
   };
   return (
     <>
-      <Header onLogout={clickLogout} onDashboard={clickDashboard} />
+      <Header onLogout={clickLogout} onDashboard={clickDashboard} sessionToken={getUserFromSession()} />
 
       <Container sx={{ marginTop: 4 }}>
         <Typography variant="h4" gutterBottom>

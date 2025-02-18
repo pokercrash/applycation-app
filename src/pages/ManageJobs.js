@@ -28,7 +28,7 @@ const ManageJobs = () => {
     location: "",
     type: "",
     salaryRange: "",
-    requiredSkills: ""
+    requiredSkills: "",
   });
   const [editingJob, setEditingJob] = useState(null);
 
@@ -57,11 +57,18 @@ const ManageJobs = () => {
         location: job.location,
         type: job.type,
         salaryRange: job.salaryRange,
-        requiredSkills: job.requiredSkills
+        requiredSkills: job.requiredSkills,
       });
       setEditingJob(job);
     } else {
-      setJobData({ title: "", description: "", location: "", type: "", salaryRange: "", requiredSkills: ""});
+      setJobData({
+        title: "",
+        description: "",
+        location: "",
+        type: "",
+        salaryRange: "",
+        requiredSkills: "",
+      });
       setEditingJob(null);
     }
     setOpen(true);
@@ -101,7 +108,11 @@ const ManageJobs = () => {
   };
   return (
     <>
-      <Header onLogout={clickLogout} onDashboard={clickDashboard} />
+      <Header
+        onLogout={clickLogout}
+        onDashboard={clickDashboard}
+        sessionToken={getUserFromSession()}
+      />
       <Container sx={{ marginTop: 4 }}>
         <Typography variant="h4" gutterBottom>
           Manage Job Listings
@@ -126,7 +137,9 @@ const ManageJobs = () => {
                     <Typography variant="body2">{job.location}</Typography>
                     <Typography variant="body2">{job.type}</Typography>
                     <Typography variant="body2">{job.salaryRange}</Typography>
-                    <Typography variant="body2">{job.requiredSkills}</Typography>
+                    <Typography variant="body2">
+                      {job.requiredSkills}
+                    </Typography>
                     <Box sx={{ marginTop: 2 }}>
                       <Button
                         variant="outlined"

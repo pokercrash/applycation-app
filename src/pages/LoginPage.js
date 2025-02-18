@@ -33,7 +33,7 @@ const LoginPage = () => {
     }
 
     if (!emailRegex.test(email) || !password) {
-        return;
+      return;
     }
 
     setLoading(true);
@@ -43,7 +43,6 @@ const LoginPage = () => {
       const credentials = { email, password };
       const result = await loginUser(credentials);
       console.log("Login success:", result);
-      alert("Login successful!");
       navigate("/main"); // Redirect to main page after login
     } catch (err) {
       setError(err, "Invalid credentials.");
