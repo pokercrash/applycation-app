@@ -8,19 +8,36 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState(""); // Track email error
+  const [passwordError, setPasswordError] = useState(""); // Track password error
   const navigate = useNavigate();
+
+  // Email validation regex
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    // Validate email
+    if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+    } else {
+      setEmailError(""); // Clear email error if valid
+    }
+
+    // Validate password
+    if (!password) {
+      setPasswordError("Password is required");
+    } else {
+      setPasswordError(""); // Clear password error if valid
+    }
+
+    if (!emailRegex.test(email) || !password) {
+        return;
+    }
+
     setLoading(true);
     setError("");
-    console.log(email, password);
-    // if (email === "test@test.com" && password === "password") {
-    //   navigate("/main");
-    // } else {
-    //   alert("Invalid credentials");
-    // }
 
     try {
       const credentials = { email, password };
@@ -29,12 +46,15 @@ const LoginPage = () => {
       alert("Login successful!");
       navigate("/main"); // Redirect to main page after login
     } catch (err) {
-      setError(err || "Invalid credentials.");
+      setError(err, "Invalid credentials.");
       console.error("Login error:", err);
     } finally {
       setLoading(false);
     }
   };
+
+  // Disable login button if email or password is empty or invalid
+  const isFormValid = email && password && !emailError && !passwordError;
 
   return (
     <Box
@@ -69,6 +89,8 @@ const LoginPage = () => {
             label="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            error={!!emailError} // Highlight error if present
+            helperText={emailError} // Show email error message
           />
         </Grid>
         <Grid item xs={12}>
@@ -78,6 +100,8 @@ const LoginPage = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            error={!!passwordError} // Highlight error if present
+            helperText={passwordError} // Show password error message
           />
         </Grid>
         <Grid item xs={12}>
@@ -86,7 +110,6 @@ const LoginPage = () => {
             color="primary"
             fullWidth
             onClick={handleLogin}
-            disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}
           </Button>
