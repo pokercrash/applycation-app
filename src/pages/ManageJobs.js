@@ -12,8 +12,6 @@ import {
   DialogContent,
   DialogTitle,
   Box,
-  AppBar,
-  Toolbar,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getUserFromSession, handleLogout } from "../helper";
@@ -28,6 +26,9 @@ const ManageJobs = () => {
     title: "",
     description: "",
     location: "",
+    type: "",
+    salaryRange: "",
+    requiredSkills: ""
   });
   const [editingJob, setEditingJob] = useState(null);
 
@@ -54,10 +55,13 @@ const ManageJobs = () => {
         title: job.title,
         description: job.description,
         location: job.location,
+        type: job.type,
+        salaryRange: job.salaryRange,
+        requiredSkills: job.requiredSkills
       });
       setEditingJob(job);
     } else {
-      setJobData({ title: "", description: "", location: "" });
+      setJobData({ title: "", description: "", location: "", type: "", salaryRange: "", requiredSkills: ""});
       setEditingJob(null);
     }
     setOpen(true);
@@ -73,6 +77,7 @@ const ManageJobs = () => {
   };
 
   const handleSaveJob = async () => {
+    //console.log(editingJob,jobData)
     saveJob(editingJob, jobData);
     fetchJobs();
     handleCloseDialog();
@@ -119,6 +124,9 @@ const ManageJobs = () => {
                     <Typography variant="h6">{job.title}</Typography>
                     <Typography variant="body2">{job.description}</Typography>
                     <Typography variant="body2">{job.location}</Typography>
+                    <Typography variant="body2">{job.type}</Typography>
+                    <Typography variant="body2">{job.salaryRange}</Typography>
+                    <Typography variant="body2">{job.requiredSkills}</Typography>
                     <Box sx={{ marginTop: 2 }}>
                       <Button
                         variant="outlined"
@@ -157,7 +165,7 @@ const ManageJobs = () => {
               fullWidth
               value={jobData.title}
               onChange={handleChange}
-              sx={{ marginBottom: 2 }}
+              sx={{ marginBottom: 2, marginTop: 1 }}
             />
             <TextField
               label="Job Description"
@@ -174,6 +182,30 @@ const ManageJobs = () => {
               name="location"
               fullWidth
               value={jobData.location}
+              onChange={handleChange}
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              label="Job Type"
+              name="type"
+              fullWidth
+              value={jobData.type}
+              onChange={handleChange}
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              label="Salary Range"
+              name="salaryRange"
+              fullWidth
+              value={jobData.salaryRange}
+              onChange={handleChange}
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              label="Required Skills"
+              name="requiredSkills"
+              fullWidth
+              value={jobData.requiredSkills}
               onChange={handleChange}
               sx={{ marginBottom: 2 }}
             />

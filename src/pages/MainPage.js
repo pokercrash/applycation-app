@@ -6,9 +6,6 @@ import {
   Card,
   CardContent,
   Button,
-  AppBar,
-  Toolbar,
-  Box,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getUserFromSession, handleLogout } from "../helper";
