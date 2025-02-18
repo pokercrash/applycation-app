@@ -52,9 +52,6 @@ const LoginPage = () => {
     }
   };
 
-  // Disable login button if email or password is empty or invalid
-  const isFormValid = email && password && !emailError && !passwordError;
-
   return (
     <Box
       sx={{
@@ -78,6 +75,7 @@ const LoginPage = () => {
         }}
       >
         <Grid item xs={12}>
+          <Typography variant="h2">Applycation</Typography>
           <Typography variant="h4" gutterBottom>
             Login
           </Typography>
@@ -122,6 +120,16 @@ const LoginPage = () => {
           >
             Register
           </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h10" >
+            ©{new Date().getFullYear()} Wollongang & 2.5 braincells. All Rights Reserved. 
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h10">
+            Last updated {new Date().toLocaleString('default', { month: 'long' })} {new Date().getFullYear()}
+          </Typography>
         </Grid>
       </Grid>
     </Box>
