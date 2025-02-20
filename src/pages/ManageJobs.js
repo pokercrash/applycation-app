@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import Select from 'react-select';
+import countryList from 'react-select-country-list';
 import {
   Container,
   Typography,
@@ -31,6 +33,11 @@ const ManageJobs = () => {
     requiredSkills: "",
   });
   const [editingJob, setEditingJob] = useState(null);
+  const options = useMemo(() => countryList().getData(), []);
+
+  const changeHandler = (selectedOption) => {
+    setJobData((prevState) => ({ ...prevState, location: selectedOption.value }));
+  }
 
   useEffect(() => {
     if (!getUserFromSession()) {
@@ -43,7 +50,7 @@ const ManageJobs = () => {
 
   const fetchJobs = async () => {
     try {
-      setJobs(getJobs());
+      setJobs(await getJobs()); // Assuming getJobs() returns a promise
     } catch (error) {
       console.error("Error fetching jobs:", error);
     }
@@ -84,7 +91,6 @@ const ManageJobs = () => {
   };
 
   const handleSaveJob = async () => {
-    //console.log(editingJob,jobData)
     saveJob(editingJob, jobData);
     fetchJobs();
     handleCloseDialog();
@@ -102,10 +108,12 @@ const ManageJobs = () => {
   const clickDashboard = () => {
     navigate("/main");
   };
+  
   const clickLogout = () => {
     handleLogout();
     navigate("/");
   };
+
   return (
     <>
       <Header
@@ -124,10 +132,8 @@ const ManageJobs = () => {
           onClick={() => handleOpenDialog()}
         >
           Create New Job
-        </Button>
-
-        <Grid container spacing={4} sx={{ marginTop: 4 }}>
-          {jobs.length > 0 ? (
+        </Button><Grid container spacing={4} sx={{ marginTop: 4 }}>
+          {jobs?.length > 0 ? (
             jobs.map((job) => (
               <Grid item xs={12} sm={6} md={4} key={job.id}>
                 <Card>
@@ -137,9 +143,7 @@ const ManageJobs = () => {
                     <Typography variant="body2">{job.location}</Typography>
                     <Typography variant="body2">{job.type}</Typography>
                     <Typography variant="body2">{job.salaryRange}</Typography>
-                    <Typography variant="body2">
-                      {job.requiredSkills}
-                    </Typography>
+                    <Typography variant="body2">{job.requiredSkills}</Typography>
                     <Box sx={{ marginTop: 2 }}>
                       <Button
                         variant="outlined"
@@ -190,13 +194,25 @@ const ManageJobs = () => {
               onChange={handleChange}
               sx={{ marginBottom: 2 }}
             />
-            <TextField
-              label="Job Location"
-              name="location"
-              fullWidth
-              value={jobData.location}
-              onChange={handleChange}
-              sx={{ marginBottom: 2 }}
+            <Select
+              options={options}
+              value={options.find(option => option.value === jobData.location)}
+              onChange={changeHandler}
+              placeholder="Country"
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  height: 56, // Matches Material-UI TextField height
+                  padding: '0 2px', // Adjust padding to match TextField
+                  borderRadius: '4px', // Adjust border radius for consistency
+                  boxShadow: 'none', // Remove extra box shadow (optional)
+                  marginBottom: 15
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  zIndex: 1300, // Ensure dropdown is above other elements
+                }),
+              }}
             />
             <TextField
               label="Job Type"
@@ -226,8 +242,7 @@ const ManageJobs = () => {
           <DialogActions>
             <Button onClick={handleCloseDialog} color="primary">
               Cancel
-            </Button>
-            <Button onClick={handleSaveJob} color="primary">
+            </Button><Button onClick={handleSaveJob} color="primary">
               Save
             </Button>
           </DialogActions>
