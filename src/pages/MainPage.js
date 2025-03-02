@@ -60,9 +60,9 @@ const MainPage = () => {
               <Grid item xs={12} sm={6} md={4}>
                 <Card>
                   <CardContent>
-                    <Typography variant="h6">Manage Job Listings</Typography>
+                    <Typography variant="h6">View Job Listings</Typography>
                     <Typography variant="body2">
-                      Create, update, or delete job postings.
+                    Review and manage job postings.
                     </Typography>
                     <Button
                       variant="contained"
@@ -70,13 +70,13 @@ const MainPage = () => {
                       sx={{ marginTop: 2 }}
                       onClick={() => handleNavigation("/manage-jobs")}
                     >
-                      Go to Job Listings
+                      Manage Job Listings
                     </Button>
                   </CardContent>
                 </Card>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={4}>
+              {/* <Grid item xs={12} sm={6} md={4}>
                 <Card>
                   <CardContent>
                     <Typography variant="h6">View Applications</Typography>
@@ -87,13 +87,13 @@ const MainPage = () => {
                       variant="contained"
                       color="primary"
                       sx={{ marginTop: 2 }}
-                      onClick={() => handleNavigation("/view-applications")}
+                      onClick={() => handleNavigation("/manage-applications")}
                     >
                       Manage 🐒 Applications
                     </Button>
                   </CardContent>
                 </Card>
-              </Grid>
+              </Grid> */}
             </>
           ) : (
             <>

@@ -35,9 +35,11 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [file, setFile] = useState(null);
+  const [businessName, setBusinessName] = useState("");
+  const [businessUen, setBusinessUen] = useState("");
   const [fileError, setFileError] = useState(false);
   const [emailError, setEmailError] = useState(""); // To track email error
-  const [selectedOption, setSelectedOption] = useState("Employee");
+  const [role, setRole] = useState("Employee");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -70,11 +72,11 @@ const RegisterPage = () => {
       alert("Passwords do not match");
       return;
     }
-    if (!selectedOption) {
+    if (!role) {
       alert("Please select an option");
       return;
     }
-    if (selectedOption === "Employee" && !file) {
+    if (role === "Employee" && !file) {
       setFileError(true); // Show error if file is not selected
       return;
     }
@@ -83,7 +85,10 @@ const RegisterPage = () => {
       name,
       email,
       password,
-      selectedOption,
+      role: role,
+      resume: file ?? null,
+      businessName: businessName,
+      businessUen: businessUen
     };
 
     setLoading(true);
@@ -108,9 +113,9 @@ const RegisterPage = () => {
     email &&
     password &&
     confirmPassword &&
-    selectedOption &&
+    role &&
     !emailError &&
-    (selectedOption === "Employer" || file); // Only require file if "Employee" is selected
+    (role === "Employer" || file); // Only require file if "Employee" is selected
     return (
       <Box
         sx={{
@@ -142,8 +147,8 @@ const RegisterPage = () => {
             <FormControl fullWidth variant="outlined">
               <InputLabel>Choose an Option</InputLabel>
               <Select
-                value={selectedOption}
-                onChange={(e) => setSelectedOption(e.target.value)}
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
                 label="Choose an Option"
               >
                 <MenuItem value="Employee">Employee</MenuItem>
@@ -153,7 +158,7 @@ const RegisterPage = () => {
           </Grid>
   
           {/* Conditionally render the Upload Resume button and file name */}
-          {selectedOption === 'Employee' && (
+          {role === 'Employee' && (
             <Grid item xs={12}>
               <Button
                 component="label"

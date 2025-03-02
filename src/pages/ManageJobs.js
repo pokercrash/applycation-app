@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import Select from 'react-select';
-import countryList from 'react-select-country-list';
+import Select from "react-select";
+import countryList from "react-select-country-list";
 import {
   Container,
   Typography,
@@ -18,7 +18,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getUserFromSession, handleLogout } from "../helper";
 import Header from "../components/header";
-import { saveJob, getJobs } from "../api"; // Import the loginUser function
+import { saveJob, deleteJob } from "../api"; // Import the loginUser function
 
 const ManageJobs = () => {
   const navigate = useNavigate();
@@ -26,18 +26,20 @@ const ManageJobs = () => {
   const [open, setOpen] = useState(false);
   const [jobData, setJobData] = useState({
     title: "",
-    description: "",
     location: "",
-    type: "",
-    salaryRange: "",
-    requiredSkills: "",
+    description: "",
+    salary: "",
+    jobType: "",
   });
   const [editingJob, setEditingJob] = useState(null);
   const options = useMemo(() => countryList().getData(), []);
 
   const changeHandler = (selectedOption) => {
-    setJobData((prevState) => ({ ...prevState, location: selectedOption.value }));
-  }
+    setJobData((prevState) => ({
+      ...prevState,
+      location: selectedOption.value,
+    }));
+  };
 
   useEffect(() => {
     if (!getUserFromSession()) {
@@ -50,7 +52,25 @@ const ManageJobs = () => {
 
   const fetchJobs = async () => {
     try {
-      setJobs(await getJobs()); // Assuming getJobs() returns a promise
+      //setJobs(await getJobs());
+      setJobs([
+        {
+          id: 1,
+          title: "Software Engineer",
+          location: "CA",
+          description: "Develop and maintain web applications.",
+          salary: "$120,000/year",
+          jobType: "Full-time",
+        },
+        {
+          id: 2,
+          title: "Product Manager",
+          location: "SG",
+          description: "Oversee product development lifecycle.",
+          salary: "$100,000/year",
+          jobType: "Full-time",
+        },
+      ]);
     } catch (error) {
       console.error("Error fetching jobs:", error);
     }
@@ -60,21 +80,19 @@ const ManageJobs = () => {
     if (job) {
       setJobData({
         title: job.title,
-        description: job.description,
         location: job.location,
-        type: job.type,
-        salaryRange: job.salaryRange,
-        requiredSkills: job.requiredSkills,
+        description: job.description,
+        salary: job.salary,
+        jobType: job.jobType,
       });
       setEditingJob(job);
     } else {
       setJobData({
         title: "",
-        description: "",
         location: "",
-        type: "",
-        salaryRange: "",
-        requiredSkills: "",
+        description: "",
+        salary: "",
+        jobType: "",
       });
       setEditingJob(null);
     }
@@ -98,7 +116,7 @@ const ManageJobs = () => {
 
   const handleDeleteJob = async (id) => {
     try {
-      await fetch(`/api/jobs/${id}`, { method: "DELETE" });
+      deleteJob(id);
       fetchJobs();
     } catch (error) {
       console.error("Error deleting job:", error);
@@ -108,12 +126,16 @@ const ManageJobs = () => {
   const clickDashboard = () => {
     navigate("/main");
   };
-  
+
   const clickLogout = () => {
     handleLogout();
     navigate("/");
   };
 
+  const handleNavigation = (id) => {
+    navigate(`/manage-applications/${id}`);
+  };
+  
   return (
     <>
       <Header
@@ -132,19 +154,30 @@ const ManageJobs = () => {
           onClick={() => handleOpenDialog()}
         >
           Create New Job
-        </Button><Grid container spacing={4} sx={{ marginTop: 4 }}>
+        </Button>
+        <Grid container spacing={4} sx={{ marginTop: 4 }}>
           {jobs?.length > 0 ? (
             jobs.map((job) => (
               <Grid item xs={12} sm={6} md={4} key={job.id}>
                 <Card>
                   <CardContent>
                     <Typography variant="h6">{job.title}</Typography>
-                    <Typography variant="body2">{job.description}</Typography>
                     <Typography variant="body2">{job.location}</Typography>
-                    <Typography variant="body2">{job.type}</Typography>
-                    <Typography variant="body2">{job.salaryRange}</Typography>
-                    <Typography variant="body2">{job.requiredSkills}</Typography>
+                    <Typography variant="body2">{job.description}</Typography>
+                    <Typography variant="body2">{job.salary}</Typography>
+                    <Typography variant="body2">{job.jobType}</Typography>
                     <Box sx={{ marginTop: 2 }}>
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() =>
+                          handleNavigation(job.id)
+                        }
+                      >
+                        View Applications 
+                      </Button>
+                      <br />
+                      <br />
                       <Button
                         variant="outlined"
                         color="primary"
@@ -160,6 +193,7 @@ const ManageJobs = () => {
                       >
                         Delete
                       </Button>
+                      
                     </Box>
                   </CardContent>
                 </Card>
@@ -184,6 +218,28 @@ const ManageJobs = () => {
               onChange={handleChange}
               sx={{ marginBottom: 2, marginTop: 1 }}
             />
+            <Select
+              options={options}
+              value={options.find(
+                (option) => option.value === jobData.location
+              )}
+              onChange={changeHandler}
+              placeholder="Country"
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  height: 56,
+                  padding: "0 2px",
+                  borderRadius: "4px",
+                  boxShadow: "none",
+                  marginBottom: 15,
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  zIndex: 1300,
+                }),
+              }}
+            />
             <TextField
               label="Job Description"
               name="description"
@@ -194,47 +250,19 @@ const ManageJobs = () => {
               onChange={handleChange}
               sx={{ marginBottom: 2 }}
             />
-            <Select
-              options={options}
-              value={options.find(option => option.value === jobData.location)}
-              onChange={changeHandler}
-              placeholder="Country"
-              styles={{
-                control: (provided) => ({
-                  ...provided,
-                  height: 56, // Matches Material-UI TextField height
-                  padding: '0 2px', // Adjust padding to match TextField
-                  borderRadius: '4px', // Adjust border radius for consistency
-                  boxShadow: 'none', // Remove extra box shadow (optional)
-                  marginBottom: 15
-                }),
-                menu: (provided) => ({
-                  ...provided,
-                  zIndex: 1300, // Ensure dropdown is above other elements
-                }),
-              }}
+            <TextField
+              label="Salary"
+              name="salary"
+              fullWidth
+              value={jobData.salary}
+              onChange={handleChange}
+              sx={{ marginBottom: 2 }}
             />
             <TextField
               label="Job Type"
-              name="type"
+              name="jobType"
               fullWidth
-              value={jobData.type}
-              onChange={handleChange}
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              label="Salary Range"
-              name="salaryRange"
-              fullWidth
-              value={jobData.salaryRange}
-              onChange={handleChange}
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              label="Required Skills"
-              name="requiredSkills"
-              fullWidth
-              value={jobData.requiredSkills}
+              value={jobData.jobType}
               onChange={handleChange}
               sx={{ marginBottom: 2 }}
             />
@@ -242,7 +270,8 @@ const ManageJobs = () => {
           <DialogActions>
             <Button onClick={handleCloseDialog} color="primary">
               Cancel
-            </Button><Button onClick={handleSaveJob} color="primary">
+            </Button>
+            <Button onClick={handleSaveJob} color="primary">
               Save
             </Button>
           </DialogActions>
