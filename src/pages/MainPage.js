@@ -89,7 +89,7 @@ const MainPage = () => {
                       sx={{ marginTop: 2 }}
                       onClick={() => handleNavigation("/manage-applications")}
                     >
-                      Manage 🐒 Applications
+                      Manage Applications
                     </Button>
                   </CardContent>
                 </Card>

@@ -52,7 +52,7 @@ const ManageJobs = () => {
 
   const fetchJobs = async () => {
     try {
-      //setJobs(await getJobs());
+      //setJobs(await getJobs(employerId));
       setJobs([
         {
           id: 1,

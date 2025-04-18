@@ -88,7 +88,7 @@ const RegisterPage = () => {
       role: role,
       resume: file ?? null,
       businessName: businessName,
-      businessUen: businessUen
+      businessUen: businessUen,
     };
 
     setLoading(true);
@@ -100,7 +100,7 @@ const RegisterPage = () => {
       alert("Registration successful!");
       navigate("/");
     } catch (err) {
-      setError(err,  "Something went wrong.");
+      setError(err, "Something went wrong.");
       console.error("Registration error:", err);
     } finally {
       setLoading(false);
@@ -115,86 +115,109 @@ const RegisterPage = () => {
     confirmPassword &&
     role &&
     !emailError &&
-    (role === "Employer" || file); // Only require file if "Employee" is selected
-    return (
-      <Box
+    (role === "Employer" || file) && // Only require file if "Employee" is selected
+    (role === "Employee" || (businessName && businessUen)); 
+  return (
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f5f5f5",
+        padding: "20px",
+      }}
+    >
+      <Grid
+        container
+        spacing={2}
+        maxWidth="sm"
         sx={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "#fff",
           padding: "20px",
+          borderRadius: "12px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <Grid
-          container
-          spacing={2}
-          maxWidth="sm"
-          sx={{
-            backgroundColor: "#fff",
-            padding: "20px",
-            borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-          }}
-        >
+        <Grid item xs={12}>
+          <Typography variant="h4" textAlign="center" gutterBottom>
+            Register
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth variant="outlined">
+            <InputLabel>Choose an Option</InputLabel>
+            <Select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              label="Choose an Option"
+            >
+              <MenuItem value="Employee">Employee</MenuItem>
+              <MenuItem value="Employer">Employer</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
+        {/* Conditionally render the Upload Resume button and file name */}
+        {role === "Employee" && (
           <Grid item xs={12}>
-            <Typography variant="h4" textAlign="center" gutterBottom>
-              Register
-            </Typography>
+            <Button
+              component="label"
+              variant="outlined"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+              sx={{ marginTop: -1 }}
+            >
+              Upload Resume
+              <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+            </Button>
+
+            {/* Display the selected file name and remove button */}
+            {file && (
+              <Box sx={{ display: "flex", alignItems: "center", marginTop: 1 }}>
+                <Typography variant="body2" sx={{ marginRight: 2 }}>
+                  Selected file: {file.name}
+                </Typography>
+                <Button
+                  variant="text"
+                  startIcon={<DeleteIcon />}
+                  onClick={removeFile} // Remove the selected file
+                >
+                  Remove
+                </Button>
+              </Box>
+            )}
+
+            {fileError && (
+              <FormHelperText error>File is required to submit</FormHelperText>
+            )}
           </Grid>
+        )}
+        {role === "Employer" && (
           <Grid item xs={12}>
-            <FormControl fullWidth variant="outlined">
-              <InputLabel>Choose an Option</InputLabel>
-              <Select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                label="Choose an Option"
-              >
-                <MenuItem value="Employee">Employee</MenuItem>
-                <MenuItem value="Employer">Employer</MenuItem>
-              </Select>
-            </FormControl>
+            <TextField
+              fullWidth
+              label="Business Name"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              variant="outlined"
+              required
+            />
           </Grid>
-  
-          {/* Conditionally render the Upload Resume button and file name */}
-          {role === 'Employee' && (
-            <Grid item xs={12}>
-              <Button
-                component="label"
-                variant="outlined"
-                tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-                sx={{ marginTop: -1 }}
-              >
-                Upload Resume
-                <VisuallyHiddenInput
-                  type="file"
-                  onChange={handleFileChange}
-                />
-              </Button>
-  
-              {/* Display the selected file name and remove button */}
-              {file && (
-                <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 1 }}>
-                  <Typography variant="body2" sx={{ marginRight: 2 }}>
-                    Selected file: {file.name}
-                  </Typography>
-                  <Button
-                    variant="text"
-                    startIcon={<DeleteIcon />}
-                    onClick={removeFile} // Remove the selected file
-                  >
-                    Remove
-                  </Button>
-                </Box>
-              )}
-  
-              {fileError && (
-                <FormHelperText error>File is required to submit</FormHelperText>
-              )}
-            </Grid>
-          )}<Grid item xs={12}>
+        )}
+        {role === "Employer" && (
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Business Uen"
+              value={businessUen}
+              onChange={(e) => setBusinessUen(e.target.value)}
+              variant="outlined"
+              required
+            />
+          </Grid>
+        )}
+        <Grid item xs={12}>
           <TextField
             fullWidth
             label="Name"

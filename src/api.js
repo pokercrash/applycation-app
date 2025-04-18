@@ -35,8 +35,8 @@ export const loginUser = async (credentials) => {
     // handleLogin(response.data);
     const credentials = {
       username: "testing@test.com",
-      role: "employer",
-      //    role: 'employee'
+      //role: "employer",
+         role: 'employer'
     };
     // const credentials = {
     //   username: userData.email,
@@ -50,18 +50,36 @@ export const loginUser = async (credentials) => {
   }
 };
 
-export const getJobs = async () => {
+export const searchJobs = async (searchParams) => {
   try {
-    const response = await axios.post(`${API_URL}/getJobs`);
+    const response = await axios.get(`${API_URL}/searchJobs`, searchParams);
     return response.data;
   } catch (error) {
-    console.error("Error fetching jobs:", error);
+    console.error("Error searching jobs:", error);
+  }
+};
+
+export const getJobs = async (employerId) => {
+  try {
+    const response = await axios.get(`${API_URL}/getJobs`, employerId);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting jobs:", error);
+  }
+};
+
+export const getAppliedJobs = async (employeeId) => {
+  try {
+    const response = await axios.get(`${API_URL}/getAppliedJobs`, employeeId);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting applied jobs:", error);
   }
 };
 
 export const getJobsById = async (id) => {
   try {
-    const response = await axios.post(`${API_URL}/getJobs`, id);
+    const response = await axios.get(`${API_URL}/getJobs`, id);
     return response.data;
   } catch (error) {
     console.error("Error fetching jobsbyid:", error);
@@ -110,7 +128,7 @@ export const deleteJob = async (id) => {
 
 export const getApplicationsByJobId = async (id) => {
   try {
-    const response = await axios.post(`${API_URL}/getApplicationsByJobId`, id);
+    const response = await axios.get(`${API_URL}/getApplicationsByJobId`, id);
     return response.data;
   } catch (error) {
     console.error("Error fetching applications:", error);
@@ -119,7 +137,7 @@ export const getApplicationsByJobId = async (id) => {
 
 export const downloadResumeByApplicationId = async (id) => {
   try {
-    const response = await axios.post(
+    const response = await axios.get(
       `${API_URL}/getResumeByApplicationId`,
       id
     );

@@ -62,16 +62,19 @@ const ManageApplications = () => {
         {
           id: 1,
           name: "tom1",
+          email: "tom1@test.com",
           resume: "download URL1",
         },
         {
           id: 2,
           name: "tom2",
+          email: "tom2@test.com",
           resume: "download URL2",
         },
         {
           id: 3,
           name: "tom3",
+          email: "tom3@test.com",
           resume: "download URL3",
         },
       ]);
@@ -118,7 +121,7 @@ const ManageApplications = () => {
       />
       <Container sx={{ marginTop: 4 }}>
         <Typography variant="h4" gutterBottom>
-          Manage 🐒 Applications
+          Manage Applications
         </Typography>
         <Typography variant="h6" gutterBottom>
           {jobData.title} ({jobData.jobType}) -&nbsp;
@@ -134,6 +137,7 @@ const ManageApplications = () => {
                 <Card>
                   <CardContent>
                     <Typography variant="h6">{application.name}</Typography>
+                    <Typography variant="h6">{application.email}</Typography>
                     <Box sx={{ marginTop: 2 }}>
                       <Button
                         variant="outlined"

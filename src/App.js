@@ -5,6 +5,9 @@ import RegisterPage from "./pages/RegisterPage";
 import MainPage from "./pages/MainPage";
 import ManageJobs from "./pages/ManageJobs"
 import ManageApplications from "./pages/ManageApplications"
+import ViewApplications from "./pages/ViewApplications";
+import ViewJob from "./pages/ViewJob";
+
 //import "./assets/css/material-kit-react.css"; // Update the path based on your project structure
 
 function App() {
@@ -17,8 +20,8 @@ function App() {
 
                 <Route path="/manage-jobs" element={<ManageJobs />} />
                 <Route path="/manage-applications/:id" element={<ManageApplications />} />
-                <Route path="/jobs" element={<MainPage />} />
-                <Route path="/my-applications" element={<MainPage />} />
+                <Route path="/jobs" element={<ViewJob />} />
+                <Route path="/my-applications" element={<ViewApplications />} />
             </Routes>
         </Router>
     );
