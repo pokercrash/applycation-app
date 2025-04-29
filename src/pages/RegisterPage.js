@@ -39,7 +39,7 @@ const RegisterPage = () => {
   const [businessUen, setBusinessUen] = useState("");
   const [fileError, setFileError] = useState(false);
   const [emailError, setEmailError] = useState(""); // To track email error
-  const [role, setRole] = useState("Employee");
+  const [role, setRole] = useState("job_seeker");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -76,7 +76,7 @@ const RegisterPage = () => {
       alert("Please select an option");
       return;
     }
-    if (role === "Employee" && !file) {
+    if (role === "job_seeker" && !file) {
       setFileError(true); // Show error if file is not selected
       return;
     }
@@ -98,7 +98,7 @@ const RegisterPage = () => {
       const result = await registerUser(userData);
       console.log("Registration success:", result);
       alert("Registration successful!");
-      navigate("/");
+      navigate("/main");
     } catch (err) {
       setError(err, "Something went wrong.");
       console.error("Registration error:", err);
@@ -115,8 +115,8 @@ const RegisterPage = () => {
     confirmPassword &&
     role &&
     !emailError &&
-    (role === "Employer" || file) && // Only require file if "Employee" is selected
-    (role === "Employee" || (businessName && businessUen)); 
+    //(role === "employer" || file) && // Only require file if "job_seeker" is selected
+    (role === "job_seeker" || (businessName && businessUen)); 
   return (
     <Box
       sx={{
@@ -152,14 +152,14 @@ const RegisterPage = () => {
               onChange={(e) => setRole(e.target.value)}
               label="Choose an Option"
             >
-              <MenuItem value="Employee">Employee</MenuItem>
-              <MenuItem value="Employer">Employer</MenuItem>
+              <MenuItem value="job_seeker">Employee</MenuItem>
+              <MenuItem value="employer">Employer</MenuItem>
             </Select>
           </FormControl>
         </Grid>
 
         {/* Conditionally render the Upload Resume button and file name */}
-        {role === "Employee" && (
+        {role === "job_seeker" && (
           <Grid item xs={12}>
             <Button
               component="label"
@@ -193,7 +193,7 @@ const RegisterPage = () => {
             )}
           </Grid>
         )}
-        {role === "Employer" && (
+        {role === "employer" && (
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -205,7 +205,7 @@ const RegisterPage = () => {
             />
           </Grid>
         )}
-        {role === "Employer" && (
+        {role === "employer" && (
           <Grid item xs={12}>
             <TextField
               fullWidth

@@ -8,21 +8,48 @@ import {
   Button,
   Box,
   TextField,
-  MenuItem
+  MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormHelperText,
 } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
+import { styled } from "@mui/material/styles";
 import { getUserFromSession, handleLogout } from "../helper";
+import { searchJobs, submitApplication } from "../api"; // Import the loginUser function
 import Header from "../components/header";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 const ViewJob = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [file, setFile] = useState(null);
+  const [currentJob, setCurrentJob] = useState(null);
+  const [fileError, setFileError] = useState(false);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [searchParams, setSearchParams] = useState({
     businessName: "",
     location: "",
     jobType: "",
   });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     if (!getUserFromSession()) {
@@ -46,25 +73,13 @@ const ViewJob = () => {
 
   const fetchJobs = async () => {
     try {
-      //setJobs(await searchJobs(searchParams));
-      setJobs([
-        {
-          id: 1,
-          title: "Software Engineer",
-          location: "Canada",
-          description: "Develop and maintain web applications.",
-          salary: "$120,000/year",
-          jobType: "Full-time",
-        },
-        {
-          id: 2,
-          title: "Product Manager",
-          location: "Singapore",
-          description: "Oversee product development lifecycle.",
-          salary: "$100,000/year",
-          jobType: "Full-time",
-        },
-      ]);
+      const jobs = await searchJobs();
+      if (jobs) {
+        setJobs(jobs);
+        console.log("Fetched Jobs...");
+      } else {
+        console.warn("No jobs found or an error occurred.");
+      }
     } catch (error) {
       console.error("Error fetching jobs:", error);
     }
@@ -87,10 +102,55 @@ const ViewJob = () => {
     navigate("/");
   };
 
+  const handleOpenDialog = async (job) => {
+    setCurrentJob(job);
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setCurrentJob(null);
+    setName("");
+    setEmail("");
+    setFile(null);
+    setOpen(false);
+  };
+
+  const handleApplyJob = async () => {
+    const formData = new FormData();
+    formData.append("job", currentJob._id);
+    formData.append("applicantName", name);
+    formData.append("email", email);
+    formData.append("resume", file);
+
+    const response = await submitApplication(formData);
+    if (response.status === 200 || response.status === 201) {
+      handleCloseDialog();
+      setName("");
+      setEmail("");
+      setFile(null);
+      alert("Job Applied Successfully");
+    } else {
+      setName("");
+      setEmail("");
+      setFile(null);
+      alert("Job Failed");
+    }
+  };
+
+  const removeFile = () => {
+    setFile(null);
+  };
+
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile); 
+    setFileError(false);
+  };
+
   const handleNavigation = (id) => {
     navigate(`/manage-applications/${id}`);
   };
-  
+
   return (
     <>
       <Header
@@ -149,7 +209,7 @@ const ViewJob = () => {
         <Grid container spacing={4}>
           {filteredJobs?.length > 0 ? (
             filteredJobs.map((job) => (
-              <Grid item xs={12} sm={6} md={4} key={job.id}>
+              <Grid item xs={12} sm={6} md={4} key={job._id}>
                 <Card>
                   <CardContent>
                     <Typography variant="h6">{job.title}</Typography>
@@ -161,7 +221,7 @@ const ViewJob = () => {
                       <Button
                         variant="outlined"
                         color="secondary"
-                        onClick={() => handleNavigation(job.id)}
+                        onClick={() => handleOpenDialog(job)}
                       >
                         Apply
                       </Button>
@@ -176,6 +236,92 @@ const ViewJob = () => {
             </Grid>
           )}
         </Grid>
+
+        <Dialog open={open} onClose={handleCloseDialog}>
+          <DialogTitle>{"Apply Job"}</DialogTitle>
+          <DialogContent>
+            <Grid
+              container
+              spacing={2}
+              maxWidth="sm"
+              sx={{
+                backgroundColor: "#fff",
+                padding: "20px",
+                borderRadius: "12px",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  variant="outlined"
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  variant="outlined"
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  component="label"
+                  variant="outlined"
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                  sx={{ marginTop: -1 }}
+                >
+                  Upload Resume
+                  <VisuallyHiddenInput
+                    type="file"
+                    onChange={handleFileChange}
+                  />
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                {/* Display the selected file name and remove button */}
+                {file && (
+                  <Box
+                    sx={{ display: "flex", alignItems: "center", marginTop: 1 }}
+                  >
+                    <Typography variant="body2" sx={{ marginRight: 2 }}>
+                      Selected file: {file.name}
+                    </Typography>
+                    <Button
+                      variant="text"
+                      startIcon={<DeleteIcon />}
+                      onClick={removeFile} // Remove the selected file
+                    >
+                      Remove
+                    </Button>
+                  </Box>
+                )}
+                {fileError && (
+                  <FormHelperText error>
+                    File is required to submit
+                  </FormHelperText>
+                )}
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleApplyJob} color="primary">
+              Apply
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </>
   );

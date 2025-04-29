@@ -1,73 +1,113 @@
 import axios from "axios";
-import { handleLogin } from "./helper";
-import { Password } from "@mui/icons-material";
+import {
+  handleLogin,
+  applicationServiceUrl,
+  authServiceUrl,
+  listingServiceUrl,
+  getTokenFromSession,
+  defaultApi,
+} from "./helper";
 
 const API_URL = "https://api.com";
 
 export const registerUser = async (userData) => {
   try {
-    //const response = await axios.post(`${API_URL}/register`, userData);
-    // handleLogin(response.data);
-    const credentials = {
-      username: "testing@test.com",
-      role: "employer",
-      // role: 'employee'
+    const params = {
+      username: userData.email,
+      password: userData.password,
+      role: userData.role,
     };
-
-    // const credentials = {
-    //   username: userData.email,
-    //   role: userData.role,
-    //   resume: userData.file,
-    //   businessUen: userData.businessUen,
-    //   businessName: userData.businessName
-    // };
-
-    handleLogin(credentials);
-    return true;
+    axios
+      //.get(applicationServiceUrl + "health")
+      .post(authServiceUrl + "register", params)
+      .then((response) => {
+        console.log(response.data);
+        // const credentials = {
+        //   username: "testing@test.com",
+        //   //role: "employer",
+        //   role: "employer",
+        // };
+        //handleLogin(response.data);
+        return true;
+      })
+      .catch((err) => {
+        console.error("Error:", err.response?.status, err.message);
+        return false;
+      });
+    return false;
   } catch (error) {
     throw error.response ? error.response.data : error.message;
   }
 };
 
 export const loginUser = async (credentials) => {
-  try {
-    // const response = await axios.post(`${API_URL}/login`, credentials);
-    // handleLogin(response.data);
-    const credentials = {
-      username: "testing@test.com",
-      //role: "employer",
-         role: 'employer'
-    };
-    // const credentials = {
-    //   username: userData.email,
-    //   password: userData.password
-    // };
+  const params = {
+    username: credentials.email,
+    password: credentials.password,
+  };
 
-    handleLogin(credentials);
-    return true;
+  credentials = {
+    username: "testing@test.com",
+    role: "employer",
+  };
+  handleLogin(credentials);
+  return true;
+  try {
+    axios
+      // .get(applicationServiceUrl + "health")
+      .post(authServiceUrl + "login", params)
+      .then((response) => {
+        console.log(response.data);
+        // const credentials = {
+        //   username: "testing@test.com",
+        //   role: "employer",
+        // };
+        // handleLogin(credentials);
+        return true;
+      })
+      .catch((err) => {
+        console.error("Error:", err.response?.status, err.message);
+        return false;
+      });
+    return false;
   } catch (error) {
     throw error.response ? error.response.data : error.message;
   }
 };
 
+//employee search for all jobs (done)
 export const searchJobs = async (searchParams) => {
   try {
-    const response = await axios.get(`${API_URL}/searchJobs`, searchParams);
+    const response = await axios.get(listingServiceUrl + defaultApi, {
+      headers: {
+        Authorization: `Bearer ${getTokenFromSession()}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error searching jobs:", error);
   }
 };
 
-export const getJobs = async (employerId) => {
+//employer find its own jobs (done)
+export const getJobs = async () => {
   try {
-    const response = await axios.get(`${API_URL}/getJobs`, employerId);
+    const response = await axios.get(
+      listingServiceUrl + defaultApi + "/created",
+      {
+        headers: {
+          Authorization: `Bearer ${getTokenFromSession()}`,
+        },
+      }
+    );
     return response.data;
-  } catch (error) {
-    console.error("Error getting jobs:", error);
+  } catch (err) {
+    console.error("Error getting jobs:", err.response?.status, err.message);
+    return null;
   }
 };
 
+//employee find their applied jobs
 export const getAppliedJobs = async (employeeId) => {
   try {
     const response = await axios.get(`${API_URL}/getAppliedJobs`, employeeId);
@@ -77,33 +117,62 @@ export const getAppliedJobs = async (employeeId) => {
   }
 };
 
+//employer get the job description of the job they created by the job id (done)
 export const getJobsById = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/getJobs`, id);
-    return response.data;
+    const response = await axios.get(
+      listingServiceUrl + defaultApi + "/job-listings/" + id,
+      {
+        headers: {
+          Authorization: `Bearer ${getTokenFromSession()}`,
+        },
+      }
+    );
+    return await response;
   } catch (error) {
     console.error("Error fetching jobsbyid:", error);
   }
 };
 
+//employer create/edit job (done)
 export const saveJob = async (editingJob, jobData) => {
   try {
+    const params = {
+      title: jobData.title,
+      company: jobData.company,
+      location: jobData.location,
+      description: jobData.description,
+      salary: jobData.salary,
+      jobType: jobData.jobType,
+    };
+
     if (editingJob) {
-      // Update job
       try {
-        const response = await axios.post(
-          `${API_URL}/jobs/${editingJob.id}`,
-          jobData
+        const response = await axios.put(
+          listingServiceUrl + defaultApi + "/" + jobData._id,
+          params,
+          {
+            headers: {
+              Authorization: `Bearer ${getTokenFromSession()}`,
+            },
+          }
         );
-        return response.data;
+        return await response;
       } catch (error) {
         throw error.response ? error.response.data : error.message;
       }
     } else {
-      // Create new job
       try {
-        const response = await axios.post(`${API_URL}/jobs`, jobData);
-        return response.data;
+        const response = await axios.post(
+          listingServiceUrl + defaultApi,
+          params,
+          {
+            headers: {
+              Authorization: `Bearer ${getTokenFromSession()}`,
+            },
+          }
+        );
+        return await response;
       } catch (error) {
         throw error.response ? error.response.data : error.message;
       }
@@ -113,40 +182,79 @@ export const saveJob = async (editingJob, jobData) => {
   }
 };
 
-export const deleteJob = async (id) => {
+//employee submit application (done)
+export const submitApplication = async (applyJob) => {
   try {
-    try {
-      const response = await axios.post(`${API_URL}/deleteJob`, id);
-      return response.data;
-    } catch (error) {
-      throw error.response ? error.response.data : error.message;
-    }
+    const response = await axios.post(
+      applicationServiceUrl + defaultApi,
+      applyJob,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${getTokenFromSession()}`,
+        },
+      }
+    );
+    return await response;
   } catch (error) {
-    console.error("Error saving job:", error);
+    throw error.response ? error.response.data : error.message;
   }
 };
 
+//employer delete job (done)
+export const deleteJob = async (id) => {
+  try {
+    const response = await axios.delete(
+      listingServiceUrl + defaultApi + "/" + id,
+      {
+        headers: {
+          Authorization: `Bearer ${getTokenFromSession()}`,
+        },
+      }
+    );
+    return await response;
+  } catch (error) {
+    throw error.response ? error.response.data : error.message;
+  }
+};
+
+//employer get applications of the job they posted (done)
 export const getApplicationsByJobId = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/getApplicationsByJobId`, id);
+    const response = await axios.get(
+      applicationServiceUrl + defaultApi + "/job/" + id,
+      {
+        headers: {
+          Authorization: `Bearer ${getTokenFromSession()}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching applications:", error);
   }
 };
 
+//todo fix download blob
+//employee can download resume
 export const downloadResumeByApplicationId = async (id) => {
   try {
     const response = await axios.get(
-      `${API_URL}/getResumeByApplicationId`,
-      id
+      applicationServiceUrl + defaultApi + "/resume/" + id,
+      { responseType: "blob" },
+      {
+        headers: {
+          Authorization: `Bearer ${getTokenFromSession()}`,
+        },
+      }
     );
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error fetching resume:", error);
   }
 };
 
+//employee approve application
 export const approveApplication = async (id) => {
   try {
     try {

@@ -20,7 +20,6 @@ const MainPage = () => {
     if (getUserFromSession()) {
       try {
         setUserRole(getUserFromSession().role);
-        console.log(getUserFromSession());
       } catch (error) {
         console.error("Invalid session token", error);
         // Handle invalid token case

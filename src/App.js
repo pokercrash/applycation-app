@@ -8,8 +8,6 @@ import ManageApplications from "./pages/ManageApplications"
 import ViewApplications from "./pages/ViewApplications";
 import ViewJob from "./pages/ViewJob";
 
-//import "./assets/css/material-kit-react.css"; // Update the path based on your project structure
-
 function App() {
     return (
         <Router>

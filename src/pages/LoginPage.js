@@ -43,7 +43,10 @@ const LoginPage = () => {
       const credentials = { email, password };
       const result = await loginUser(credentials);
       console.log("Login success:", result);
-      navigate("/main"); // Redirect to main page after login
+      if(result)
+      {
+        navigate("/main");
+      }
     } catch (err) {
       setError(err, "Invalid credentials.");
       console.error("Login error:", err);

@@ -12,10 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { getUserFromSession, handleLogout } from "../helper";
 import Header from "../components/header";
 import {
-  getJobsById,
-  getApplicationsByJobId,
   downloadResumeByApplicationId,
-  approveApplication,
 } from "../api"; 
 const ViewApplications = () => {
   const navigate = useNavigate();

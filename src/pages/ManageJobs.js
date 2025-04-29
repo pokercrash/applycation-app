@@ -18,14 +18,16 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getUserFromSession, handleLogout } from "../helper";
 import Header from "../components/header";
-import { saveJob, deleteJob } from "../api"; // Import the loginUser function
+import { saveJob, deleteJob, getJobs } from "../api"; // Import the loginUser function
 
 const ManageJobs = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [open, setOpen] = useState(false);
   const [jobData, setJobData] = useState({
+    _id: "",
     title: "",
+    company: "",
     location: "",
     description: "",
     salary: "",
@@ -41,45 +43,41 @@ const ManageJobs = () => {
     }));
   };
 
+  const getCompany = async () => {
+    const user = await getUserFromSession();
+    return await user.sub;
+  };
+
   useEffect(() => {
     if (!getUserFromSession()) {
       navigate("/");
     } else {
-      // Fetch job listings
+      console.log("Fetching Jobs...");
       fetchJobs();
     }
   }, [navigate]);
 
   const fetchJobs = async () => {
     try {
-      //setJobs(await getJobs(employerId));
-      setJobs([
-        {
-          id: 1,
-          title: "Software Engineer",
-          location: "CA",
-          description: "Develop and maintain web applications.",
-          salary: "$120,000/year",
-          jobType: "Full-time",
-        },
-        {
-          id: 2,
-          title: "Product Manager",
-          location: "SG",
-          description: "Oversee product development lifecycle.",
-          salary: "$100,000/year",
-          jobType: "Full-time",
-        },
-      ]);
+      const jobs = await getJobs();
+      if (jobs) {
+        setJobs(jobs);
+        console.log("Fetched Jobs...");
+      } else {
+        console.warn("No jobs found or an error occurred.");
+      }
     } catch (error) {
       console.error("Error fetching jobs:", error);
     }
   };
 
-  const handleOpenDialog = (job = null) => {
+  const handleOpenDialog = async (job = null) => {
+    const company = await getCompany();
     if (job) {
       setJobData({
+        _id: job._id,
         title: job.title,
+        company: company,
         location: job.location,
         description: job.description,
         salary: job.salary,
@@ -88,7 +86,9 @@ const ManageJobs = () => {
       setEditingJob(job);
     } else {
       setJobData({
+        _id: "",
         title: "",
+        company: company,
         location: "",
         description: "",
         salary: "",
@@ -109,17 +109,27 @@ const ManageJobs = () => {
   };
 
   const handleSaveJob = async () => {
-    saveJob(editingJob, jobData);
-    fetchJobs();
-    handleCloseDialog();
+    const response = await saveJob(editingJob, jobData);
+    if (response.status === 200 || response.status === 201) {
+      fetchJobs();
+      handleCloseDialog();
+      if (editingJob) {
+        alert("Job Updated Successfully");
+      } else {
+        alert("Job Created Successfully");
+      }
+    } else {
+      alert("Job Failed");
+    }
   };
 
   const handleDeleteJob = async (id) => {
-    try {
-      deleteJob(id);
+    const response = await deleteJob(id);
+    if (response.status === 200 || response.status === 201) {
       fetchJobs();
-    } catch (error) {
-      console.error("Error deleting job:", error);
+      alert("Delete Job Successfully");
+    } else {
+      alert("Delete Job Failed");
     }
   };
 
@@ -135,7 +145,7 @@ const ManageJobs = () => {
   const handleNavigation = (id) => {
     navigate(`/manage-applications/${id}`);
   };
-  
+
   return (
     <>
       <Header
@@ -158,7 +168,7 @@ const ManageJobs = () => {
         <Grid container spacing={4} sx={{ marginTop: 4 }}>
           {jobs?.length > 0 ? (
             jobs.map((job) => (
-              <Grid item xs={12} sm={6} md={4} key={job.id}>
+              <Grid item xs={12} sm={6} md={4} key={job._id}>
                 <Card>
                   <CardContent>
                     <Typography variant="h6">{job.title}</Typography>
@@ -167,14 +177,12 @@ const ManageJobs = () => {
                     <Typography variant="body2">{job.salary}</Typography>
                     <Typography variant="body2">{job.jobType}</Typography>
                     <Box sx={{ marginTop: 2 }}>
-                    <Button
+                      <Button
                         variant="outlined"
                         color="secondary"
-                        onClick={() =>
-                          handleNavigation(job.id)
-                        }
+                        onClick={() => handleNavigation(job._id)}
                       >
-                        View Applications 
+                        View Applications
                       </Button>
                       <br />
                       <br />
@@ -188,12 +196,11 @@ const ManageJobs = () => {
                       <Button
                         variant="outlined"
                         color="error"
-                        onClick={() => handleDeleteJob(job.id)}
+                        onClick={() => handleDeleteJob(job._id)}
                         sx={{ marginLeft: 2 }}
                       >
                         Delete
                       </Button>
-                      
                     </Box>
                   </CardContent>
                 </Card>

@@ -17,6 +17,7 @@ import {
   downloadResumeByApplicationId,
   approveApplication,
 } from "../api"; 
+import { format } from 'date-fns';
 
 const ManageApplications = () => {
   const { id } = useParams();
@@ -42,13 +43,13 @@ const ManageApplications = () => {
 
   const fetchJobs = async () => {
     try {
-      setJobData(await getJobsById(id));
+      const response = await getJobsById(id)
       setJobData({
-        title: "Software Engineer",
-        location: "CA",
-        description: "Develop and maintain web applications.",
-        salary: "$120,000/year",
-        jobType: "Full-time",
+        title: response.data.title,
+        location: response.data.location,
+        description: response.data.description,
+        salary: response.data.salary,
+        jobType: response.data.jobType,
       });
     } catch (error) {
       console.error("Error fetching jobs:", error);
@@ -57,27 +58,9 @@ const ManageApplications = () => {
 
   const fetchApplications = async () => {
     try {
-      setApplications(await getApplicationsByJobId(id));
-      setApplications([
-        {
-          id: 1,
-          name: "tom1",
-          email: "tom1@test.com",
-          resume: "download URL1",
-        },
-        {
-          id: 2,
-          name: "tom2",
-          email: "tom2@test.com",
-          resume: "download URL2",
-        },
-        {
-          id: 3,
-          name: "tom3",
-          email: "tom3@test.com",
-          resume: "download URL3",
-        },
-      ]);
+      const response = await getApplicationsByJobId(id);
+      console.log(response);
+      setApplications(response);
     } catch (error) {
       console.error("Error fetching jobs:", error);
     }
@@ -103,7 +86,8 @@ const ManageApplications = () => {
 
   const downloadResumeById = async (id) => {
     try {
-      await downloadResumeByApplicationId(id);
+      const response = await downloadResumeByApplicationId(id);
+      console.log(response);
     } catch (error) {
       console.error("Error downloading resume:", error);
     }
@@ -133,23 +117,25 @@ const ManageApplications = () => {
         <Grid container spacing={4} sx={{ marginTop: 1 }}>
           {applications?.length > 0 ? (
             applications.map((application) => (
-              <Grid item xs={12} sm={6} md={4} key={application.id}>
+              <Grid item xs={12} sm={6} md={4} key={application._id}>
                 <Card>
                   <CardContent>
-                    <Typography variant="h6">{application.name}</Typography>
-                    <Typography variant="h6">{application.email}</Typography>
+                    <Typography variant="h6">Name: {application.applicantName}</Typography>
+                    <Typography variant="h6">Email: {application.email}</Typography>
+                    <Typography variant="h6">Applied at: {format(new Date(application.appliedAt), 'dd MMM yyyy')}</Typography>
+                    <Typography variant="h6">{application.status}</Typography>
                     <Box sx={{ marginTop: 2 }}>
                       <Button
                         variant="outlined"
                         color="secondary"
-                        onClick={() => downloadResumeById(application.id)}
+                        onClick={() => downloadResumeById(application._id)}
                       >
                         Download Resume
                       </Button>
                       <Button
                         variant="outlined"
                         color="primary"
-                        onClick={() => handleApproveApplication(application.id)}
+                        onClick={() => handleApproveApplication(application._id)}
                         sx={{ marginLeft: 2 }}
                       >
                         Approve
