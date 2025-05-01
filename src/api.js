@@ -44,29 +44,30 @@ export const loginUser = async (credentials) => {
     password: credentials.password,
   };
 
-  credentials = {
-    username: "testing@test.com",
-    role: "employee",
-  };
-  handleLogin(credentials);
-  return true;
+  // credentials = {
+  //   username: "testing@test.com",
+  //   role: "employee",
+  // };
+  // handleLogin(credentials);
+  // return true;
   try {
-    axios
-      // .get(applicationServiceUrl + "health")
-      .post(authServiceUrl + "login", params)
-      .then((response) => {
-        console.log(response.data);
-        // const credentials = {
-        //   username: "testing@test.com",
-        //   role: "employer",
-        // };
-        // handleLogin(credentials);
-        return true;
-      })
-      .catch((err) => {
-        console.error("Error:", err.response?.status, err.message);
-        return false;
-      });
+    const params = {
+      username: "new1",
+      password: "new1password",
+    };
+    const response = await axios.post(
+      // authServiceUrl + defaultApi + "/login",
+      authServiceUrl + "login",
+      params,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log(response.data);
+
     return false;
   } catch (error) {
     throw error.response ? error.response.data : error.message;
