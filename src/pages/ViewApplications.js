@@ -5,15 +5,16 @@ import {
   Grid,
   Card,
   CardContent,
-  Box, 
-  Button
+  Box,
+  Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getUserFromSession, handleLogout } from "../helper";
 import Header from "../components/header";
-import {
-  downloadResumeByApplicationId,
-} from "../api"; 
+import { getAppliedJobs } from "../api";
+import "@fontsource/montserrat";
+import "@fontsource/roboto/300.css";
+
 const ViewApplications = () => {
   const navigate = useNavigate();
   const [appliedJobs, setAppliedJobs] = useState([]);
@@ -28,6 +29,8 @@ const ViewApplications = () => {
 
   const fetchAppliedApplications = async () => {
     try {
+      const response = await getAppliedJobs();
+      console.log(response);
       //setAppliedJobs(await getAppliedJobs());
       setAppliedJobs([
         {
@@ -54,14 +57,6 @@ const ViewApplications = () => {
     }
   };
 
-  const downloadResume = async (id) => {
-      try {
-        await downloadResumeByApplicationId(id);
-      } catch (error) {
-        console.error("Error downloading resume:", error);
-      }
-    };
-
   const clickDashboard = () => {
     navigate("/main");
   };
@@ -70,7 +65,7 @@ const ViewApplications = () => {
     handleLogout();
     navigate("/");
   };
-  
+
   return (
     <>
       <Header
@@ -79,35 +74,79 @@ const ViewApplications = () => {
         sessionToken={getUserFromSession()}
       />
       <Container sx={{ marginTop: 4 }}>
-        <Typography variant="h4" gutterBottom>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{
+            fontFamily: "Montserrat, sans-serif",
+          }}
+        >
           View Submitted Applications
         </Typography>
-        <Grid container spacing={4} >
+        <Grid container spacing={4}>
           {appliedJobs?.length > 0 ? (
             appliedJobs.map((appliedJob) => (
               <Grid item xs={12} sm={6} md={4} key={appliedJob.id}>
                 <Card>
                   <CardContent>
-                    <Typography variant="h6">{appliedJob.title}</Typography>
-                    <Typography variant="body2">{appliedJob.location}</Typography>
-                    <Typography variant="body2">{appliedJob.description}</Typography>
-                    <Typography variant="body2">{appliedJob.salary}</Typography>
-                    <Typography variant="body2">{appliedJob.jobType}</Typography>
-                    <Box sx={{ marginTop: 2 }}>
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={() => downloadResume(appliedJobs.id)}
-                      >
-                        Download Resume
-                      </Button>
-                    </Box>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      {appliedJob.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {appliedJob.location}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {appliedJob.description}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {appliedJob.salary}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {appliedJob.jobType}
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
             ))
           ) : (
-            <Typography variant="body1">No applied jobs.</Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
+            >
+              No applied jobs.
+            </Typography>
           )}
         </Grid>
       </Container>

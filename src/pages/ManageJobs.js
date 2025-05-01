@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import Select from "react-select";
+import { default as CountrySelect } from "react-select";
 import countryList from "react-select-country-list";
 import {
   Container,
@@ -14,11 +14,17 @@ import {
   DialogContent,
   DialogTitle,
   Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getUserFromSession, handleLogout } from "../helper";
 import Header from "../components/header";
 import { saveJob, deleteJob, getJobs } from "../api"; // Import the loginUser function
+import "@fontsource/montserrat"; 
+import "@fontsource/roboto/300.css"; 
 
 const ManageJobs = () => {
   const navigate = useNavigate();
@@ -28,10 +34,10 @@ const ManageJobs = () => {
     _id: "",
     title: "",
     company: "",
-    location: "",
+    location: "SG",
     description: "",
-    salary: "",
-    jobType: "",
+    salary: "5000",
+    jobType: "Full-time",
   });
   const [editingJob, setEditingJob] = useState(null);
   const options = useMemo(() => countryList().getData(), []);
@@ -89,10 +95,10 @@ const ManageJobs = () => {
         _id: "",
         title: "",
         company: company,
-        location: "",
+        location: "SG",
         description: "",
-        salary: "",
-        jobType: "",
+        salary: "5000",
+        jobType: "Full-time",
       });
       setEditingJob(null);
     }
@@ -154,7 +160,13 @@ const ManageJobs = () => {
         sessionToken={getUserFromSession()}
       />
       <Container sx={{ marginTop: 4 }}>
-        <Typography variant="h4" gutterBottom>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{
+            fontFamily: "Montserrat, sans-serif",
+          }}
+        >
           Manage Job Listings
         </Typography>
 
@@ -162,6 +174,9 @@ const ManageJobs = () => {
           variant="contained"
           color="primary"
           onClick={() => handleOpenDialog()}
+          sx={{
+            fontFamily: "Montserrat, sans-serif",
+          }}
         >
           Create New Job
         </Button>
@@ -171,13 +186,57 @@ const ManageJobs = () => {
               <Grid item xs={12} sm={6} md={4} key={job._id}>
                 <Card>
                   <CardContent>
-                    <Typography variant="h6">{job.title}</Typography>
-                    <Typography variant="body2">{job.location}</Typography>
-                    <Typography variant="body2">{job.description}</Typography>
-                    <Typography variant="body2">{job.salary}</Typography>
-                    <Typography variant="body2">{job.jobType}</Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      {job.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {options.find((option) => option.value === job.location)
+                        ?.label || job.location}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {job.description}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      ${job.salary}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {job.jobType}
+                    </Typography>
+
                     <Box sx={{ marginTop: 2 }}>
                       <Button
+                        sx={{
+                          fontFamily: "Montserrat, sans-serif",
+                        }}
                         variant="outlined"
                         color="secondary"
                         onClick={() => handleNavigation(job._id)}
@@ -187,6 +246,9 @@ const ManageJobs = () => {
                       <br />
                       <br />
                       <Button
+                        sx={{
+                          fontFamily: "Montserrat, sans-serif",
+                        }}
                         variant="outlined"
                         color="primary"
                         onClick={() => handleOpenDialog(job)}
@@ -197,7 +259,10 @@ const ManageJobs = () => {
                         variant="outlined"
                         color="error"
                         onClick={() => handleDeleteJob(job._id)}
-                        sx={{ marginLeft: 2 }}
+                        sx={{
+                          marginLeft: 2,
+                          fontFamily: "Montserrat, sans-serif",
+                        }}
                       >
                         Delete
                       </Button>
@@ -207,13 +272,24 @@ const ManageJobs = () => {
               </Grid>
             ))
           ) : (
-            <Typography variant="body1">No job listings found.</Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontFamily: "Montserrat, sans-serif",
+              }}
+            >
+              No job listings found.
+            </Typography>
           )}
         </Grid>
 
         {/* Job Dialog (Create / Edit) */}
         <Dialog open={open} onClose={handleCloseDialog}>
-          <DialogTitle>
+          <DialogTitle
+            sx={{
+              fontFamily: "Montserrat, sans-serif",
+            }}
+          >
             {editingJob ? "Edit Job" : "Create New Job"}
           </DialogTitle>
           <DialogContent>
@@ -223,9 +299,14 @@ const ManageJobs = () => {
               fullWidth
               value={jobData.title}
               onChange={handleChange}
-              sx={{ marginBottom: 2, marginTop: 1 }}
+              sx={{
+                marginBottom: 2,
+                marginTop: 1,
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
             />
-            <Select
+            <CountrySelect
               options={options}
               value={options.find(
                 (option) => option.value === jobData.location
@@ -233,6 +314,8 @@ const ManageJobs = () => {
               onChange={changeHandler}
               placeholder="Country"
               styles={{
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
                 control: (provided) => ({
                   ...provided,
                   height: 56,
@@ -255,7 +338,11 @@ const ManageJobs = () => {
               rows={4}
               value={jobData.description}
               onChange={handleChange}
-              sx={{ marginBottom: 2 }}
+              sx={{
+                marginBottom: 2,
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
             />
             <TextField
               label="Salary"
@@ -263,22 +350,87 @@ const ManageJobs = () => {
               fullWidth
               value={jobData.salary}
               onChange={handleChange}
-              sx={{ marginBottom: 2 }}
+              sx={{
+                marginBottom: 2,
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
             />
-            <TextField
-              label="Job Type"
-              name="jobType"
-              fullWidth
-              value={jobData.jobType}
-              onChange={handleChange}
-              sx={{ marginBottom: 2 }}
-            />
+            <FormControl fullWidth variant="outlined" sx={{ marginBottom: 2 }}>
+              <InputLabel
+                sx={{
+                  fontFamily: "Roboto, sans-serif",
+                  fontWeight: 300,
+                }}
+              >
+                Choose a Job Type
+              </InputLabel>
+              <Select
+                value={jobData.jobType}
+                onChange={(event) =>
+                  setJobData((prevData) => ({
+                    ...prevData,
+                    jobType: event.target.value,
+                  }))
+                }
+                label="Choose an Option"
+              >
+                <MenuItem
+                  value="Full-time"
+                  sx={{
+                    fontFamily: "Roboto, sans-serif",
+                    fontWeight: 300,
+                  }}
+                >
+                  Full-time
+                </MenuItem>
+                <MenuItem
+                  value="Part-time"
+                  sx={{
+                    fontFamily: "Roboto, sans-serif",
+                    fontWeight: 300,
+                  }}
+                >
+                  Part-time
+                </MenuItem>
+                <MenuItem
+                  value="Contract"
+                  sx={{
+                    fontFamily: "Roboto, sans-serif",
+                    fontWeight: 300,
+                  }}
+                >
+                  Contract
+                </MenuItem>
+                <MenuItem
+                  value="Internship"
+                  sx={{
+                    fontFamily: "Roboto, sans-serif",
+                    fontWeight: 300,
+                  }}
+                >
+                  Internship
+                </MenuItem>
+              </Select>
+            </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog} color="primary">
+            <Button
+              onClick={handleCloseDialog}
+              color="secondary"
+              sx={{
+                fontFamily: "Montserrat, sans-serif",
+              }}
+            >
               Cancel
             </Button>
-            <Button onClick={handleSaveJob} color="primary">
+            <Button
+              onClick={handleSaveJob}
+              color="primary"
+              sx={{
+                fontFamily: "Montserrat, sans-serif",
+              }}
+            >
               Save
             </Button>
           </DialogActions>

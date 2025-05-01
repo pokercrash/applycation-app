@@ -22,6 +22,8 @@ import { styled } from "@mui/material/styles";
 import { getUserFromSession, handleLogout } from "../helper";
 import { searchJobs, submitApplication } from "../api"; // Import the loginUser function
 import Header from "../components/header";
+import "@fontsource/montserrat";
+import "@fontsource/roboto/300.css";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -50,6 +52,9 @@ const ViewJob = () => {
   });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   useEffect(() => {
     if (!getUserFromSession()) {
@@ -116,6 +121,14 @@ const ViewJob = () => {
   };
 
   const handleApplyJob = async () => {
+    // Email validation
+    if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    } else {
+      setEmailError("");
+    }
+
     const formData = new FormData();
     formData.append("job", currentJob._id);
     formData.append("applicantName", name);
@@ -143,7 +156,7 @@ const ViewJob = () => {
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
-    setFile(selectedFile); 
+    setFile(selectedFile);
     setFileError(false);
   };
 
@@ -159,7 +172,13 @@ const ViewJob = () => {
         sessionToken={getUserFromSession()}
       />
       <Container sx={{ marginTop: 4 }}>
-        <Typography variant="h4" gutterBottom>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{
+            fontFamily: "Montserrat, sans-serif",
+          }}
+        >
           Search Jobs
         </Typography>
         {/* Search Filters */}
@@ -171,6 +190,10 @@ const ViewJob = () => {
             value={searchParams.businessName}
             onChange={handleSearchChange}
             fullWidth
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
           />
           <TextField
             label="Location"
@@ -179,6 +202,10 @@ const ViewJob = () => {
             value={searchParams.location}
             onChange={handleSearchChange}
             fullWidth
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
           />
           <TextField
             label="Job Type"
@@ -188,12 +215,44 @@ const ViewJob = () => {
             value={searchParams.jobType}
             onChange={handleSearchChange}
             fullWidth
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
           >
-            <MenuItem value="Full-time">Full-time</MenuItem>
-            <MenuItem value="Part-time">Part-time</MenuItem>
-            <MenuItem value="Contract">Contract</MenuItem>
+            <MenuItem
+              value="Full-time"
+              sx={{
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
+            >
+              Full-time
+            </MenuItem>
+            <MenuItem
+              value="Part-time"
+              sx={{
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
+            >
+              Part-time
+            </MenuItem>
+            <MenuItem
+              value="Contract"
+              sx={{
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
+            >
+              Contract
+            </MenuItem>
           </TextField>
           <Button
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
             variant="outlined"
             color="primary"
             onClick={() =>
@@ -212,13 +271,56 @@ const ViewJob = () => {
               <Grid item xs={12} sm={6} md={4} key={job._id}>
                 <Card>
                   <CardContent>
-                    <Typography variant="h6">{job.title}</Typography>
-                    <Typography variant="body2">{job.location}</Typography>
-                    <Typography variant="body2">{job.description}</Typography>
-                    <Typography variant="body2">{job.salary}</Typography>
-                    <Typography variant="body2">{job.jobType}</Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      {job.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {job.location}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {job.description}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {job.salary}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {job.jobType}
+                    </Typography>
                     <Box sx={{ marginTop: 2 }}>
                       <Button
+                        sx={{
+                          fontFamily: "Roboto, sans-serif",
+                          fontWeight: 300,
+                        }}
                         variant="outlined"
                         color="secondary"
                         onClick={() => handleOpenDialog(job)}
@@ -232,13 +334,27 @@ const ViewJob = () => {
             ))
           ) : (
             <Grid item xs={12} sm={6} md={4}>
-              <Typography variant="body">No job listings found.</Typography>
+              <Typography
+                variant="body"
+                sx={{
+                  fontFamily: "Roboto, sans-serif",
+                  fontWeight: 300,
+                }}
+              >
+                No job listings found.
+              </Typography>
             </Grid>
           )}
         </Grid>
 
         <Dialog open={open} onClose={handleCloseDialog}>
-          <DialogTitle>{"Apply Job"}</DialogTitle>
+          <DialogTitle
+            sx={{
+              fontFamily: "Montserrat, sans-serif",
+            }}
+          >
+            Apply Job
+          </DialogTitle>
           <DialogContent>
             <Grid
               container
@@ -253,6 +369,10 @@ const ViewJob = () => {
             >
               <Grid item xs={12}>
                 <TextField
+                  sx={{
+                    fontFamily: "Roboto, sans-serif",
+                    fontWeight: 300,
+                  }}
                   fullWidth
                   label="Name"
                   value={name}
@@ -263,12 +383,18 @@ const ViewJob = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  sx={{
+                    fontFamily: "Roboto, sans-serif",
+                    fontWeight: 300,
+                  }}
                   fullWidth
                   label="Email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   variant="outlined"
+                  error={!!emailError} // Highlight error if present
+                  helperText={emailError} // Show error message
                   required
                 />
               </Grid>
@@ -278,7 +404,11 @@ const ViewJob = () => {
                   variant="outlined"
                   tabIndex={-1}
                   startIcon={<CloudUploadIcon />}
-                  sx={{ marginTop: -1 }}
+                  sx={{
+                    marginTop: -1,
+                    fontFamily: "Roboto, sans-serif",
+                    fontWeight: 300,
+                  }}
                 >
                   Upload Resume
                   <VisuallyHiddenInput
@@ -293,10 +423,21 @@ const ViewJob = () => {
                   <Box
                     sx={{ display: "flex", alignItems: "center", marginTop: 1 }}
                   >
-                    <Typography variant="body2" sx={{ marginRight: 2 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        marginRight: 2,
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
                       Selected file: {file.name}
                     </Typography>
                     <Button
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
                       variant="text"
                       startIcon={<DeleteIcon />}
                       onClick={removeFile} // Remove the selected file
@@ -306,7 +447,13 @@ const ViewJob = () => {
                   </Box>
                 )}
                 {fileError && (
-                  <FormHelperText error>
+                  <FormHelperText
+                    error
+                    sx={{
+                      fontFamily: "Roboto, sans-serif",
+                      fontWeight: 300,
+                    }}
+                  >
                     File is required to submit
                   </FormHelperText>
                 )}
@@ -314,10 +461,24 @@ const ViewJob = () => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog} color="primary">
+            <Button
+              sx={{
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
+              onClick={handleCloseDialog}
+              color="secondary"
+            >
               Cancel
             </Button>
-            <Button onClick={handleApplyJob} color="primary">
+            <Button
+              sx={{
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
+              onClick={handleApplyJob}
+              color="primary"
+            >
               Apply
             </Button>
           </DialogActions>

@@ -9,53 +9,26 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-  FormHelperText
 } from "@mui/material";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from "react-router-dom";
-import { styled } from '@mui/material/styles';
-import { registerUser } from "../api"; // Import the registerUser function
-
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-});
+import { registerUser } from "../api";
+import "@fontsource/montserrat";
+import "@fontsource/roboto/300.css";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [file, setFile] = useState(null);
   const [businessName, setBusinessName] = useState("");
   const [businessUen, setBusinessUen] = useState("");
-  const [fileError, setFileError] = useState(false);
-  const [emailError, setEmailError] = useState(""); // To track email error
+  const [emailError, setEmailError] = useState("");
   const [role, setRole] = useState("job_seeker");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Email validation regex
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    setFile(selectedFile); // Set the selected file
-    setFileError(false); // Reset the error when a file is selected
-  };
-
-  const removeFile = () => {
-    setFile(null); // Reset the file state to null, effectively removing the file
-  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -65,7 +38,7 @@ const RegisterPage = () => {
       setEmailError("Please enter a valid email address");
       return;
     } else {
-      setEmailError(""); // Clear email error if valid
+      setEmailError("");
     }
 
     if (password !== confirmPassword) {
@@ -76,17 +49,12 @@ const RegisterPage = () => {
       alert("Please select an option");
       return;
     }
-    if (role === "job_seeker" && !file) {
-      setFileError(true); // Show error if file is not selected
-      return;
-    }
 
     const userData = {
       name,
       email,
       password,
       role: role,
-      resume: file ?? null,
       businessName: businessName,
       businessUen: businessUen,
     };
@@ -115,8 +83,7 @@ const RegisterPage = () => {
     confirmPassword &&
     role &&
     !emailError &&
-    //(role === "employer" || file) && // Only require file if "job_seeker" is selected
-    (role === "job_seeker" || (businessName && businessUen)); 
+    (role === "job_seeker" || (businessName && businessUen));
   return (
     <Box
       sx={{
@@ -140,62 +107,65 @@ const RegisterPage = () => {
         }}
       >
         <Grid item xs={12}>
-          <Typography variant="h4" textAlign="center" gutterBottom>
+          <Typography
+            variant="h4"
+            textAlign="center"
+            gutterBottom
+            sx={{
+              fontFamily: "Montserrat, sans-serif",
+            }}
+          >
             Register
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth variant="outlined">
-            <InputLabel>Choose an Option</InputLabel>
+            <InputLabel
+              sx={{
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
+            >
+              Choose an Option
+            </InputLabel>
             <Select
+              sx={{
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
               value={role}
               onChange={(e) => setRole(e.target.value)}
               label="Choose an Option"
             >
-              <MenuItem value="job_seeker">Employee</MenuItem>
-              <MenuItem value="employer">Employer</MenuItem>
+              <MenuItem
+                value="job_seeker"
+                sx={{
+                  fontFamily: "Roboto, sans-serif",
+                  fontWeight: 300,
+                }}
+              >
+                Employee
+              </MenuItem>
+              <MenuItem
+                value="employer"
+                sx={{
+                  fontFamily: "Roboto, sans-serif",
+                  fontWeight: 300,
+                }}
+              >
+                Employer
+              </MenuItem>
             </Select>
           </FormControl>
         </Grid>
 
-        {/* Conditionally render the Upload Resume button and file name */}
-        {role === "job_seeker" && (
-          <Grid item xs={12}>
-            <Button
-              component="label"
-              variant="outlined"
-              tabIndex={-1}
-              startIcon={<CloudUploadIcon />}
-              sx={{ marginTop: -1 }}
-            >
-              Upload Resume
-              <VisuallyHiddenInput type="file" onChange={handleFileChange} />
-            </Button>
-
-            {/* Display the selected file name and remove button */}
-            {file && (
-              <Box sx={{ display: "flex", alignItems: "center", marginTop: 1 }}>
-                <Typography variant="body2" sx={{ marginRight: 2 }}>
-                  Selected file: {file.name}
-                </Typography>
-                <Button
-                  variant="text"
-                  startIcon={<DeleteIcon />}
-                  onClick={removeFile} // Remove the selected file
-                >
-                  Remove
-                </Button>
-              </Box>
-            )}
-
-            {fileError && (
-              <FormHelperText error>File is required to submit</FormHelperText>
-            )}
-          </Grid>
-        )}
         {role === "employer" && (
           <Grid item xs={12}>
             <TextField
+              sx={{
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
               fullWidth
               label="Business Name"
               value={businessName}
@@ -208,6 +178,10 @@ const RegisterPage = () => {
         {role === "employer" && (
           <Grid item xs={12}>
             <TextField
+              sx={{
+                fontFamily: "Roboto, sans-serif",
+                fontWeight: 300,
+              }}
               fullWidth
               label="Business Uen"
               value={businessUen}
@@ -219,6 +193,10 @@ const RegisterPage = () => {
         )}
         <Grid item xs={12}>
           <TextField
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
             fullWidth
             label="Name"
             value={name}
@@ -229,6 +207,10 @@ const RegisterPage = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
             fullWidth
             label="Email"
             type="email"
@@ -242,6 +224,10 @@ const RegisterPage = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
             fullWidth
             label="Password"
             type="password"
@@ -253,6 +239,10 @@ const RegisterPage = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
             fullWidth
             label="Confirm Password"
             type="password"
@@ -269,13 +259,24 @@ const RegisterPage = () => {
             fullWidth
             onClick={handleRegister}
             disabled={!isFormValid || loading} // Disable button if form is not valid or loading
-            sx={{ padding: "10px 0", fontSize: "16px" }}
+            sx={{
+              padding: "10px 0",
+              fontSize: "16px",
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
           >
             {loading ? "Registering..." : "Sign Up"}
           </Button>
         </Grid>
         <Grid item xs={12} textAlign="center">
-          <Typography variant="body2">
+          <Typography
+            variant="body2"
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
+          >
             Already have an account?{" "}
             <Button
               variant="text"

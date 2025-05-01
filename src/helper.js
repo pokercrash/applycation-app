@@ -1,8 +1,10 @@
 import { jwtDecode } from "jwt-decode";
 
 export const handleLogin = (credentials) => {
-  const temp = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ldzEiLCJyb2xlIjoiZW1wbG95ZXIiLCJzdWIiOiJuZXcxIiwiZXhwIjoxNzQ1OTk5ODI0LCJuYmYiOjE3NDU3NDA2MjQsImlhdCI6MTc0NTc0MDYyNH0.K5pzJ-kjoDszP4HFFRRF2x0VS-pCo5Bil2By4VN1xmE";
-  //const temp = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ldzIiLCJyb2xlIjoiam9ic2Vla2VyIiwic3ViIjoibmV3MiIsImV4cCI6MTc0NjE5Mjk5OCwibmJmIjoxNzQ1OTMzNzk4LCJpYXQiOjE3NDU5MzM3OTh9.okGynYAq2RBZuXsGxO6jiZxDBmWSgLp5xjXYMqUyWB0";
+  // employer
+  //const temp = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ldzEiLCJyb2xlIjoiZW1wbG95ZXIiLCJzdWIiOiJuZXcxIiwiZXhwIjoxNzQ2MzI5MzQ4LCJuYmYiOjE3NDYwNzAxNDgsImlhdCI6MTc0NjA3MDE0OH0.X3pMmY6ZpEHoG9XD-OEw5orwFG9SGtqCWou4ixPEGgc";
+  // jobseeker
+  const temp = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ldzIiLCJyb2xlIjoiam9ic2Vla2VyIiwic3ViIjoibmV3MiIsImV4cCI6MTc0NjMyOTMyNiwibmJmIjoxNzQ2MDcwMTI2LCJpYXQiOjE3NDYwNzAxMjZ9.BCDHnXRNj135hGzFldbH0tZ-O6LLOVoKqzQ6W7ykR-U";
   sessionStorage.setItem("jwtToken", temp);
 };
 

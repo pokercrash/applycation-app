@@ -8,8 +8,6 @@ import {
   defaultApi,
 } from "./helper";
 
-const API_URL = "https://api.com";
-
 export const registerUser = async (userData) => {
   try {
     const params = {
@@ -48,7 +46,7 @@ export const loginUser = async (credentials) => {
 
   credentials = {
     username: "testing@test.com",
-    role: "employer",
+    role: "employee",
   };
   handleLogin(credentials);
   return true;
@@ -108,9 +106,16 @@ export const getJobs = async () => {
 };
 
 //employee find their applied jobs
-export const getAppliedJobs = async (employeeId) => {
+export const getAppliedJobs = async () => {
   try {
-    const response = await axios.get(`${API_URL}/getAppliedJobs`, employeeId);
+    const response = await axios.get(
+      applicationServiceUrl + defaultApi + "/created",
+      {
+        headers: {
+          Authorization: `Bearer ${getTokenFromSession()}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error getting applied jobs:", error);
@@ -235,14 +240,13 @@ export const getApplicationsByJobId = async (id) => {
   }
 };
 
-//todo fix download blob
-//employee can download resume
+//employee can download resume (done)
 export const downloadResumeByApplicationId = async (id) => {
   try {
     const response = await axios.get(
       applicationServiceUrl + defaultApi + "/resume/" + id,
-      { responseType: "blob" },
       {
+        responseType: "blob",
         headers: {
           Authorization: `Bearer ${getTokenFromSession()}`,
         },
@@ -254,16 +258,23 @@ export const downloadResumeByApplicationId = async (id) => {
   }
 };
 
-//employee approve application
-export const approveApplication = async (id) => {
+//employee approve application (done)
+export const approveApplication = async (obj) => {
   try {
-    try {
-      const response = await axios.post(`${API_URL}/approveApplication`, id);
-      return response.data;
-    } catch (error) {
-      throw error.response ? error.response.data : error.message;
-    }
+    const params = {
+      status: obj.status,
+    };
+    const response = await axios.patch(
+      applicationServiceUrl + defaultApi + "/" + obj.id + "/status",
+      params,
+      {
+        headers: {
+          Authorization: `Bearer ${getTokenFromSession()}`,
+        },
+      }
+    );
+    return response;
   } catch (error) {
-    console.error("Error saving job:", error);
+    throw error.response ? error.response.data : error.message;
   }
 };

@@ -10,6 +10,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getUserFromSession, handleLogout } from "../helper";
 import Header from "../components/header";
+import "@fontsource/montserrat";
+import "@fontsource/roboto/300.css";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -41,13 +43,30 @@ const MainPage = () => {
   };
   return (
     <>
-      <Header onLogout={clickLogout} onDashboard={clickDashboard} sessionToken={getUserFromSession()} />
+      <Header
+        onLogout={clickLogout}
+        onDashboard={clickDashboard}
+        sessionToken={getUserFromSession()}
+      />
 
       <Container sx={{ marginTop: 4 }}>
-        <Typography variant="h4" gutterBottom>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{
+            fontFamily: "Montserrat, sans-serif",
+          }}
+        >
           Welcome to the Dashboard
         </Typography>
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{
+            fontFamily: "Roboto, sans-serif",
+            fontWeight: 300,
+          }}
+        >
           {userRole === "employer"
             ? "Manage your job postings and applications"
             : "Explore job opportunities and manage your applications"}
@@ -59,14 +78,31 @@ const MainPage = () => {
               <Grid item xs={12} sm={6} md={4}>
                 <Card>
                   <CardContent>
-                    <Typography variant="h6">View Job Listings</Typography>
-                    <Typography variant="body2">
-                    Review and manage job postings.
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      View Job Listings
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      Review and manage job postings.
                     </Typography>
                     <Button
                       variant="contained"
                       color="primary"
-                      sx={{ marginTop: 2 }}
+                      sx={{
+                        marginTop: 2,
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
                       onClick={() => handleNavigation("/manage-jobs")}
                     >
                       Manage Job Listings
@@ -99,14 +135,31 @@ const MainPage = () => {
               <Grid item xs={12} sm={6} md={4}>
                 <Card>
                   <CardContent>
-                    <Typography variant="h6">Search Jobs</Typography>
-                    <Typography variant="body2">
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      Search Jobs
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
                       Browse and filter job opportunities.
                     </Typography>
                     <Button
                       variant="contained"
                       color="primary"
-                      sx={{ marginTop: 2 }}
+                      sx={{
+                        marginTop: 2,
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
                       onClick={() => handleNavigation("/jobs")}
                     >
                       Find Jobs
@@ -118,14 +171,31 @@ const MainPage = () => {
               <Grid item xs={12} sm={6} md={4}>
                 <Card>
                   <CardContent>
-                    <Typography variant="h6">View Applications</Typography>
-                    <Typography variant="body2">
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      View Applications
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
                       Track your submitted job applications.
                     </Typography>
                     <Button
                       variant="contained"
                       color="primary"
-                      sx={{ marginTop: 2 }}
+                      sx={{
+                        marginTop: 2,
+                        fontFamily: "Roboto, sans-serif",
+                        fontWeight: 300,
+                      }}
                       onClick={() => handleNavigation("/my-applications")}
                     >
                       My Applications

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Button, TextField, Grid, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api"; // Import the loginUser function
+import "@fontsource/montserrat";
+import "@fontsource/roboto/300.css";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -43,8 +45,7 @@ const LoginPage = () => {
       const credentials = { email, password };
       const result = await loginUser(credentials);
       console.log("Login success:", result);
-      if(result)
-      {
+      if (result) {
         navigate("/main");
       }
     } catch (err) {
@@ -78,13 +79,31 @@ const LoginPage = () => {
         }}
       >
         <Grid item xs={12}>
-          <Typography variant="h2">Applycation</Typography>
-          <Typography variant="h4" gutterBottom>
+          <Typography
+            variant="h2"
+            sx={{
+              fontFamily: "Montserrat, sans-serif",
+            }}
+          >
+            Applycation
+          </Typography>
+          <Typography
+            variant="h4"
+            gutterBottom
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
+          >
             Login
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <TextField
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
             fullWidth
             label="Email"
             value={email}
@@ -95,6 +114,10 @@ const LoginPage = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
             fullWidth
             label="Password"
             type="password"
@@ -106,6 +129,10 @@ const LoginPage = () => {
         </Grid>
         <Grid item xs={12}>
           <Button
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
             variant="contained"
             color="primary"
             fullWidth
@@ -116,6 +143,10 @@ const LoginPage = () => {
         </Grid>
         <Grid item xs={12}>
           <Button
+            sx={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
             variant="contained"
             color="default"
             fullWidth
@@ -125,13 +156,27 @@ const LoginPage = () => {
           </Button>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h10" sx={{ color: "grey" }}>
-            © {new Date().getFullYear()} Wollongang & 2.5 braincells. 🦆 All Rights
-            Reserved.
+          <Typography
+            variant="h10"
+            sx={{
+              color: "grey",
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
+          >
+            © {new Date().getFullYear()} Wollongang & 2.5 braincells. 🦆 All
+            Rights Reserved.
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h10" sx={{ color: "grey" }}>
+          <Typography
+            variant="h10"
+            sx={{
+              color: "grey",
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 300,
+            }}
+          >
             Last updated{" "}
             {new Date().toLocaleString("default", { month: "long" })}{" "}
             {new Date().getFullYear()}
