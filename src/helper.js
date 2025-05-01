@@ -4,8 +4,9 @@ export const handleLogin = (credentials) => {
   // employer
   //const temp = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ldzEiLCJyb2xlIjoiZW1wbG95ZXIiLCJzdWIiOiJuZXcxIiwiZXhwIjoxNzQ2MzI5MzQ4LCJuYmYiOjE3NDYwNzAxNDgsImlhdCI6MTc0NjA3MDE0OH0.X3pMmY6ZpEHoG9XD-OEw5orwFG9SGtqCWou4ixPEGgc";
   // jobseeker
-  const temp = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ldzIiLCJyb2xlIjoiam9ic2Vla2VyIiwic3ViIjoibmV3MiIsImV4cCI6MTc0NjMyOTMyNiwibmJmIjoxNzQ2MDcwMTI2LCJpYXQiOjE3NDYwNzAxMjZ9.BCDHnXRNj135hGzFldbH0tZ-O6LLOVoKqzQ6W7ykR-U";
-  sessionStorage.setItem("jwtToken", temp);
+  //const temp = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ldzIiLCJyb2xlIjoiam9ic2Vla2VyIiwic3ViIjoibmV3MiIsImV4cCI6MTc0NjMyOTMyNiwibmJmIjoxNzQ2MDcwMTI2LCJpYXQiOjE3NDYwNzAxMjZ9.BCDHnXRNj135hGzFldbH0tZ-O6LLOVoKqzQ6W7ykR-U";
+  sessionStorage.setItem("jwtToken", credentials.token);
+  return true;
 };
 
 export const getUserFromSession = () => {

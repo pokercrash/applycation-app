@@ -66,7 +66,7 @@ const RegisterPage = () => {
       const result = await registerUser(userData);
       console.log("Registration success:", result);
       alert("Registration successful!");
-      navigate("/main");
+      navigate("/");
     } catch (err) {
       setError(err, "Something went wrong.");
       console.error("Registration error:", err);

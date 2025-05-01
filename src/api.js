@@ -15,23 +15,15 @@ export const registerUser = async (userData) => {
       password: userData.password,
       role: userData.role,
     };
-    axios
-      //.get(applicationServiceUrl + "health")
-      .post(authServiceUrl + "register", params)
-      .then((response) => {
-        console.log(response.data);
-        // const credentials = {
-        //   username: "testing@test.com",
-        //   //role: "employer",
-        //   role: "employer",
-        // };
-        //handleLogin(response.data);
-        return true;
-      })
-      .catch((err) => {
-        console.error("Error:", err.response?.status, err.message);
-        return false;
-      });
+    const response = await axios.post(
+      authServiceUrl + "register",
+      params,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return false;
   } catch (error) {
     throw error.response ? error.response.data : error.message;
@@ -39,24 +31,16 @@ export const registerUser = async (userData) => {
 };
 
 export const loginUser = async (credentials) => {
-  const params = {
-    username: credentials.email,
-    password: credentials.password,
-  };
-
-  // credentials = {
-  //   username: "testing@test.com",
-  //   role: "employee",
-  // };
-  // handleLogin(credentials);
-  // return true;
   try {
+    // const params = {
+    //   username: "new1",
+    //   password: "new1password",
+    // };
     const params = {
-      username: "new1",
-      password: "new1password",
+      username: credentials.email,
+      password: credentials.password,
     };
     const response = await axios.post(
-      // authServiceUrl + defaultApi + "/login",
       authServiceUrl + "login",
       params,
       {
@@ -65,10 +49,7 @@ export const loginUser = async (credentials) => {
         },
       }
     );
-
-    console.log(response.data);
-
-    return false;
+    return handleLogin(response.data);
   } catch (error) {
     throw error.response ? error.response.data : error.message;
   }
@@ -106,7 +87,7 @@ export const getJobs = async () => {
   }
 };
 
-//employee find their applied jobs
+//employee find their applied jobs (done)
 export const getAppliedJobs = async () => {
   try {
     const response = await axios.get(
@@ -117,7 +98,20 @@ export const getAppliedJobs = async () => {
         },
       }
     );
-    return response.data;
+    const loopResponse = response.data.map(item =>
+      axios.get(
+        listingServiceUrl + defaultApi + "/job-listings/" + item.job,
+        {
+          headers: {
+            Authorization: `Bearer ${getTokenFromSession()}`,
+          },
+        }
+    ));
+    const responseList = await Promise.all(loopResponse);
+
+    const finalResponseList = responseList.map(res => res.data);
+    
+    return finalResponseList;
   } catch (error) {
     console.error("Error getting applied jobs:", error);
   }

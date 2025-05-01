@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo} from "react";
 import {
   Container,
   Typography,
@@ -14,10 +14,12 @@ import Header from "../components/header";
 import { getAppliedJobs } from "../api";
 import "@fontsource/montserrat";
 import "@fontsource/roboto/300.css";
+import countryList from "react-select-country-list";
 
 const ViewApplications = () => {
   const navigate = useNavigate();
   const [appliedJobs, setAppliedJobs] = useState([]);
+  const options = useMemo(() => countryList().getData(), []);
 
   useEffect(() => {
     if (!getUserFromSession()) {
@@ -30,28 +32,7 @@ const ViewApplications = () => {
   const fetchAppliedApplications = async () => {
     try {
       const response = await getAppliedJobs();
-      console.log(response);
-      //setAppliedJobs(await getAppliedJobs());
-      setAppliedJobs([
-        {
-          id: 1,
-          title: "Software Engineer",
-          location: "CA",
-          description: "Develop and maintain web applications.",
-          salary: "$120,000/year",
-          jobType: "Full-time",
-          resume: "download URL1",
-        },
-        {
-          id: 2,
-          title: "Product Manager",
-          location: "SG",
-          description: "Oversee product development lifecycle.",
-          salary: "$100,000/year",
-          jobType: "Full-time",
-          resume: "download URL2",
-        },
-      ]);
+      setAppliedJobs(response);
     } catch (error) {
       console.error("Error fetching applied jobs:", error);
     }
@@ -104,7 +85,8 @@ const ViewApplications = () => {
                         fontWeight: 300,
                       }}
                     >
-                      {appliedJob.location}
+                      {options.find((option) => option.value === appliedJob.location)?.label ||
+            appliedJob.location}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -138,15 +120,17 @@ const ViewApplications = () => {
               </Grid>
             ))
           ) : (
-            <Typography
-              variant="body1"
-              sx={{
-                fontFamily: "Roboto, sans-serif",
-                fontWeight: 300,
-              }}
-            >
-              No applied jobs.
-            </Typography>
+            <Grid item xs={12} sm={6} md={4}>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontFamily: "Roboto, sans-serif",
+                  fontWeight: 300,
+                }}
+              >
+                No applied jobs.
+              </Typography>
+            </Grid>
           )}
         </Grid>
       </Container>

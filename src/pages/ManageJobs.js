@@ -272,14 +272,17 @@ const ManageJobs = () => {
               </Grid>
             ))
           ) : (
-            <Typography
-              variant="body1"
-              sx={{
-                fontFamily: "Montserrat, sans-serif",
-              }}
-            >
-              No job listings found.
-            </Typography>
+            <Grid item xs={12} sm={6} md={4}>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontFamily: "Roboto, sans-serif",
+                  fontWeight: 300,
+                }}
+              >
+                No job listings found.
+              </Typography>
+            </Grid>
           )}
         </Grid>
 
