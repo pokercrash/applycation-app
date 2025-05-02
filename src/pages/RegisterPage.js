@@ -23,7 +23,7 @@ const RegisterPage = () => {
   const [businessName, setBusinessName] = useState("");
   const [businessUen, setBusinessUen] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [role, setRole] = useState("job_seeker");
+  const [role, setRole] = useState("jobseeker");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -83,7 +83,7 @@ const RegisterPage = () => {
     confirmPassword &&
     role &&
     !emailError &&
-    (role === "job_seeker" || (businessName && businessUen));
+    (role === "jobseeker" || (businessName && businessUen));
   return (
     <Box
       sx={{
@@ -138,7 +138,7 @@ const RegisterPage = () => {
               label="Choose an Option"
             >
               <MenuItem
-                value="job_seeker"
+                value="jobseeker"
                 sx={{
                   fontFamily: "Roboto, sans-serif",
                   fontWeight: 300,
