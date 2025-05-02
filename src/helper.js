@@ -35,6 +35,6 @@ export const applicationServiceUrl =
 export const listingServiceUrl =
   "http://uat-jb-listing-service-alb-892159180.ap-southeast-1.elb.amazonaws.com/";
 export const authServiceUrl =
-  "http://uat-jb-auth-service-alb-956836057.ap-southeast-1.elb.amazonaws.com/";
+  "http://uat-jb-auth-service-alb-1409435074.ap-southeast-1.elb.amazonaws.com/";
 
 export const defaultApi = "v1/api";
