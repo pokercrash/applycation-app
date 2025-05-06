@@ -136,9 +136,9 @@ const ManageApplications = () => {
     const response = await approveApplication(params);
     if (response.status === 200 || response.status === 201) {
       fetchApplications();
-      alert("Application Approved Successfully");
+      alert("Application Updated Successfully");
     } else {
-      alert("Application Approved Failed");
+      alert("Application Update Failed");
     }
   };
 
