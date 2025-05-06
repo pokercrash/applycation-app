@@ -258,7 +258,9 @@ const ViewJob = () => {
             onClick={() =>
               setSearchParams((prev) => ({
                 ...prev,
+                businessName: "",
                 jobType: "",
+                location: ""
               }))
             }
           >
